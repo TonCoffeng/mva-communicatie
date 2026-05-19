@@ -1,0 +1,10 @@
+{
+  "name": "mva-communicatie",
+  "version": "0.1.0",
+  "description": "Communicatieplatform Makelaars van Amsterdam",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "resend": "^4.0.0"
+  }
+}
