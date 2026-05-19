@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MvA Communicatie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1A2B5F;
+      --navy-licht: #2A3F7F;
+      --oranje: #E8500A;
+      --grijs-licht: #F4F5F8;
+      --grijs-mid: #E2E5ED;
+      --grijs-tekst: #6B7280;
+      --wit: #FFFFFF;
+      --zwart: #2D2D2D;
+      --groen: #10B981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--grijs-licht);
+      color: var(--zwart);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--navy);
+      color: var(--wit);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: var(--oranje);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--wit);
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 2px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: var(--wit);
+      border-radius: 12px;
+      padding: 48px 40px;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(232,80,10,0.1);
+      color: var(--oranje);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+
+    .lead {
+      font-size: 16px;
+      color: var(--grijs-tekst);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      text-align: left;
+      background: var(--grijs-licht);
+      padding: 20px 24px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .info-row .label {
+      color: var(--grijs-tekst);
+      font-weight: 500;
+    }
+
+    .info-row .value {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--groen);
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    footer {
+      padding: 20px 32px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--grijs-tekst);
+      border-top: 1px solid var(--grijs-mid);
+      background: var(--wit);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">M</div>
+    <div>
+      <h1>MvA Communicatie</h1>
+      <div class="sub">Communicatieplatform Makelaars van Amsterdam</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <span class="badge">In ontwikkeling</span>
+      <h2>Welkom bij MvA Communicatie</h2>
+      <p class="lead">
+        Dit platform wordt momenteel opgebouwd als onderdeel van MvA Intelligence.
+        Triggers, processen en communicatie-flows worden hier centraal beheerd.
+      </p>
+
+      <div class="info-grid">
+        <div class="info-row">
+          <span class="label">Status</span>
+          <span class="value"><span class="status-dot"></span> Deploy-pipeline actief</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Versie</span>
+          <span class="value">0.1 — skelet</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Eerste flow</span>
+          <span class="value">Aankoop-trigger</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 Makelaars van Amsterdam &middot; MvA Intelligence
+  </footer>
+</body>
+</html>
