@@ -23,7 +23,9 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 // PoC-config — alle mails gaan voorlopig naar Ton voor test
 const TEST_ONTVANGER_EMAIL = 'toncoffeng@makelaarsvan.nl';
 const TEST_ONTVANGER_NAAM = 'Ton Coffeng';
-const RESEND_VAN = 'MvA Communicatie <onboarding@resend.dev>';
+
+// Productie-afzender (Resend domein makelaarsvan.nl is verified per 20 mei 2026)
+const RESEND_VAN = 'MvA Intelligence <noreply@makelaarsvan.nl>';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
   auth: { persistSession: false }
