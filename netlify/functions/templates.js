@@ -185,33 +185,64 @@ Makelaars van Amsterdam — MvA Intelligence`;
 const BROCHURE_BASIS = 'https://communicatie.makelaarsvan.nl/brochures';
 const BROCHURES = {
   aankoop_nl: `${BROCHURE_BASIS}/aankoop-9-stappen.pdf`,
+  aankoop_en: `${BROCHURE_BASIS}/aankoop-9-stappen-en.pdf`,
   promotieplan_nl: `${BROCHURE_BASIS}/woningpromotieplan.pdf`,
-  promotieplan_en: `${BROCHURE_BASIS}/woningpromotieplan-en.pdf`
+  promotieplan_en: `${BROCHURE_BASIS}/woningpromotieplan-en.pdf`,
+  verkoop_nl: `${BROCHURE_BASIS}/verkoopbrochure.pdf`,
+  verkoop_en: `${BROCHURE_BASIS}/verkoopbrochure-en.pdf`,
+  spotlight: `${BROCHURE_BASIS}/spotlightbrochure.pdf`,
+  media: `${BROCHURE_BASIS}/woning-in-de-media.pdf`,
+  prijslijst: `${BROCHURE_BASIS}/prijslijst.pdf`
 };
 
-// Extra styling voor klantmails (genummerd stappenplan in brochure-stijl)
-const STAPPEN_STYLE_HINT = `
-  ol.stappen { padding-left: 0; list-style: none; counter-reset: stap; margin: 20px 0; }
-  ol.stappen li { counter-increment: stap; position: relative; padding: 0 0 14px 44px; margin: 0; }
-  ol.stappen li::before { content: counter(stap); position: absolute; left: 0; top: 0;
-    width: 28px; height: 28px; line-height: 28px; text-align: center;
-    background: #E8500A; color: white; border-radius: 50%; font-weight: 700; font-size: 14px; }
-  ol.stappen li strong { color: #1A2B5F; display: block; }
-  ol.stappen li span { font-size: 14px; color: #4B5563; }
-`;
+// ── Klantmail-bouwstenen — VOLLEDIG INLINE styling ──────────
+// Mail-clients (Gmail, Outlook) strippen <style> in de <head>;
+// daarom krijgen klantmails alle opmaak inline op de elementen.
+const KLANT_FONT = "font-family:'Helvetica Neue',Arial,sans-serif;";
+
+const klantBadge = (tekst) =>
+  `<div style="display:inline-block;background:#E8500A;color:#ffffff;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700;letter-spacing:0.5px;margin-bottom:16px;${KLANT_FONT}">${tekst}</div>`;
+
+const klantTitel = (tekst) =>
+  `<h1 style="color:#1A2B5F;font-size:22px;margin:0 0 8px 0;${KLANT_FONT}">${tekst}</h1>`;
+
+const klantPand = (label, adres) =>
+  `<div style="background:#F4F5F8;padding:14px 18px;border-radius:8px;margin:16px 0;font-size:15px;${KLANT_FONT}">${label}: <strong style="color:#1A2B5F;">${adres}</strong></div>`;
+
+const klantParagraaf = (tekst) =>
+  `<p style="margin:0 0 16px 0;color:#2D2D2D;line-height:1.6;font-size:15px;${KLANT_FONT}">${tekst}</p>`;
+
+const klantKnop = (url, label) =>
+  `<p style="margin:8px 0 20px 0;"><a href="${url}" target="_blank" rel="noopener" style="display:inline-block;background:#E8500A;color:#ffffff;padding:10px 22px;border-radius:6px;font-weight:600;text-decoration:none;font-size:14px;${KLANT_FONT}">${label}</a></p>`;
+
+// Genummerde stap als tabel-rij: werkt in alle mail-clients.
+const klantStap = (nummer, titel, omschrijving) => `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px 0;width:100%;">
+    <tr>
+      <td valign="top" style="width:38px;padding:0;">
+        <div style="width:28px;height:28px;line-height:28px;text-align:center;background:#E8500A;color:#ffffff;border-radius:50%;font-weight:700;font-size:14px;${KLANT_FONT}">${nummer}</div>
+      </td>
+      <td valign="top" style="padding:2px 0 0 0;">
+        <strong style="display:block;color:#1A2B5F;font-size:15px;line-height:1.4;${KLANT_FONT}">${titel}</strong>
+        <span style="font-size:14px;color:#4B5563;line-height:1.5;${KLANT_FONT}">${omschrijving}</span>
+      </td>
+    </tr>
+  </table>`;
+
+const klantStappenlijst = (stappen) =>
+  `<div style="margin:20px 0;">${stappen.map(([t, d], i) => klantStap(i + 1, t, d)).join('')}</div>`;
 
 const WRAP_HTML_KLANT = (innerBody, lang = 'nl') => `<!DOCTYPE html>
 <html lang="${lang}">
-<head>
-<meta charset="UTF-8">
-<style>${SHARED_STYLE}${STAPPEN_STYLE_HINT}</style>
-</head>
-<body>
-${innerBody}
-<div class="footer">
-  Makelaars van Amsterdam &middot; Valkenburgerstraat 67B, 1011 MG Amsterdam<br>
-  +31 (0)20 333 11 10 &middot; amsterdam@makelaarsvan.nl &middot; www.makelaarsvan.amsterdam
-</div>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#ffffff;">
+  <div style="max-width:600px;margin:0 auto;padding:24px 20px;${KLANT_FONT}color:#2D2D2D;line-height:1.6;">
+    ${innerBody}
+    <div style="margin-top:32px;padding-top:16px;border-top:1px solid #E2E5ED;color:#6B7280;font-size:12px;${KLANT_FONT}">
+      Makelaars van Amsterdam &middot; Valkenburgerstraat 67B, 1011 MG Amsterdam<br>
+      +31 (0)20 333 11 10 &middot; amsterdam@makelaarsvan.nl &middot; www.makelaarsvan.amsterdam
+    </div>
+  </div>
 </body>
 </html>`;
 
@@ -243,22 +274,14 @@ function templateOTDAankoop(payload) {
     ];
 
     const htmlBody = WRAP_HTML_KLANT(`
-    <div class="badge">PURCHASE AGREEMENT SIGNED</div>
-    <h1>Welcome — this is your route to your new home</h1>
-
-    <p>${aanhef}</p>
-
-    <p>Thank you for your trust in Makelaars van Amsterdam. Your purchase assignment has been
-    signed and ${makelaarNaam} will guide you personally through every step. This is the plan:</p>
-
-    <ol class="stappen">
-      ${stappenEN.map(([t, d]) => `<li><strong>${t}</strong><span>${d}</span></li>`).join('\n      ')}
-    </ol>
-
-    <p>You can read the full step-by-step plan in our brochure (in Dutch):</p>
-    <p><a href="${BROCHURES.aankoop_nl}" class="btn" target="_blank" rel="noopener">View the brochure (PDF)</a></p>
-
-    <p>Questions in the meantime? ${makelaarNaam} is your direct point of contact.</p>
+    ${klantBadge('PURCHASE AGREEMENT SIGNED')}
+    ${klantTitel('Welcome — this is your route to your new home')}
+    ${klantParagraaf(aanhef)}
+    ${klantParagraaf(`Thank you for your trust in Makelaars van Amsterdam. Your purchase assignment has been signed and ${makelaarNaam} will guide you personally through every step. This is the plan:`)}
+    ${klantStappenlijst(stappenEN)}
+    ${klantParagraaf('You can read the full step-by-step plan in our brochure:')}
+    ${klantKnop(BROCHURES.aankoop_en, 'View the brochure (PDF)')}
+    ${klantParagraaf(`Questions in the meantime? ${makelaarNaam} is your direct point of contact.`)}
     `, 'en');
 
     const textBody = `PURCHASE AGREEMENT SIGNED — Welcome to Makelaars van Amsterdam
@@ -269,7 +292,7 @@ Thank you for your trust. Your purchase assignment has been signed and ${makelaa
 
 ${stappenEN.map(([t, d], i) => `${i + 1}. ${t} — ${d}`).join('\n')}
 
-Full brochure (in Dutch): ${BROCHURES.aankoop_nl}
+Full brochure: ${BROCHURES.aankoop_en}
 
 Questions? ${makelaarNaam} is your direct point of contact.
 
@@ -297,22 +320,14 @@ Makelaars van Amsterdam — Valkenburgerstraat 67B, 1011 MG Amsterdam
   ];
 
   const htmlBody = WRAP_HTML_KLANT(`
-  <div class="badge">OPDRACHT TOT DIENSTVERLENING GETEKEND</div>
-  <h1>Welkom — dit is de route naar uw nieuwe woning</h1>
-
-  <p>${aanhef}</p>
-
-  <p>Hartelijk dank voor uw vertrouwen in Makelaars van Amsterdam. Uw aankoopopdracht is
-  getekend en ${makelaarNaam} begeleidt u persoonlijk bij iedere stap. Zo ziet het plan eruit:</p>
-
-  <ol class="stappen">
-    ${stappenNL.map(([t, d]) => `<li><strong>${t}</strong><span>${d}</span></li>`).join('\n    ')}
-  </ol>
-
-  <p>Het volledige stappenplan leest u terug in onze brochure:</p>
-  <p><a href="${BROCHURES.aankoop_nl}" class="btn" target="_blank" rel="noopener">Bekijk de brochure (PDF)</a></p>
-
-  <p>Heeft u tussendoor vragen? ${makelaarNaam} is uw directe aanspreekpunt.</p>
+  ${klantBadge('OPDRACHT TOT DIENSTVERLENING GETEKEND')}
+  ${klantTitel('Welkom — dit is de route naar uw nieuwe woning')}
+  ${klantParagraaf(aanhef)}
+  ${klantParagraaf(`Hartelijk dank voor uw vertrouwen in Makelaars van Amsterdam. Uw aankoopopdracht is getekend en ${makelaarNaam} begeleidt u persoonlijk bij iedere stap. Zo ziet het plan eruit:`)}
+  ${klantStappenlijst(stappenNL)}
+  ${klantParagraaf('Het volledige stappenplan leest u terug in onze brochure:')}
+  ${klantKnop(BROCHURES.aankoop_nl, 'Bekijk de brochure (PDF)')}
+  ${klantParagraaf(`Heeft u tussendoor vragen? ${makelaarNaam} is uw directe aanspreekpunt.`)}
   `);
 
   const textBody = `OPDRACHT TOT DIENSTVERLENING GETEKEND — Welkom bij Makelaars van Amsterdam
@@ -346,11 +361,6 @@ function templateOTDVerkoop(payload) {
   const pandAdres = payload?.pand_adres || '';
   const taal = (payload?.taal || 'nl').toLowerCase();
 
-  const pandBlokHTML = pandAdres
-    ? `<div class="pand">${taal === 'en' ? 'Property' : 'Woning'}: <strong>${pandAdres}</strong></div>`
-    : '';
-  const pandBlokTekst = pandAdres ? `${taal === 'en' ? 'Property' : 'Woning'}: ${pandAdres}\n\n` : '';
-
   if (taal === 'en') {
     const onderwerp = pandAdres
       ? `Your property promotion plan for ${pandAdres}`
@@ -368,29 +378,20 @@ function templateOTDVerkoop(payload) {
     ];
 
     const htmlBody = WRAP_HTML_KLANT(`
-    <div class="badge">SALES AGREEMENT SIGNED</div>
-    <h1>Welcome — this is your property promotion plan</h1>
-
-    ${pandBlokHTML}
-
-    <p>${aanhef}</p>
-
-    <p>Thank you for your trust in Makelaars van Amsterdam. Your sales assignment has been
-    signed and ${makelaarNaam} will now put your home on the market with a plan. These are the steps:</p>
-
-    <ol class="stappen">
-      ${stappenEN.map(([t, d]) => `<li><strong>${t}</strong><span>${d}</span></li>`).join('\n      ')}
-    </ol>
-
-    <p>Read the full plan, including all media options, in our brochure:</p>
-    <p><a href="${BROCHURES.promotieplan_en}" class="btn" target="_blank" rel="noopener">View the brochure (PDF)</a></p>
-
-    <p>Questions in the meantime? ${makelaarNaam} is your direct point of contact.</p>
+    ${klantBadge('SALES AGREEMENT SIGNED')}
+    ${klantTitel('Welcome — this is your property promotion plan')}
+    ${pandAdres ? klantPand('Property', pandAdres) : ''}
+    ${klantParagraaf(aanhef)}
+    ${klantParagraaf(`Thank you for your trust in Makelaars van Amsterdam. Your sales assignment has been signed and ${makelaarNaam} will now put your home on the market with a plan. These are the steps:`)}
+    ${klantStappenlijst(stappenEN)}
+    ${klantParagraaf('Read the full plan, including all media options, in our brochure:')}
+    ${klantKnop(BROCHURES.promotieplan_en, 'View the brochure (PDF)')}
+    ${klantParagraaf(`Questions in the meantime? ${makelaarNaam} is your direct point of contact.`)}
     `, 'en');
 
     const textBody = `SALES AGREEMENT SIGNED — Your property promotion plan
 
-${pandBlokTekst}${aanhef}
+${pandAdres ? `Property: ${pandAdres}\n\n` : ''}${aanhef}
 
 Thank you for your trust. Your sales assignment has been signed and ${makelaarNaam} will put your home on the market with a plan:
 
@@ -424,29 +425,20 @@ Makelaars van Amsterdam — Valkenburgerstraat 67B, 1011 MG Amsterdam
   ];
 
   const htmlBody = WRAP_HTML_KLANT(`
-  <div class="badge">OPDRACHT TOT DIENSTVERLENING GETEKEND</div>
-  <h1>Welkom — dit is uw woningpromotieplan</h1>
-
-  ${pandBlokHTML}
-
-  <p>${aanhef}</p>
-
-  <p>Hartelijk dank voor uw vertrouwen in Makelaars van Amsterdam. Uw verkoopopdracht is
-  getekend en ${makelaarNaam} brengt uw woning nu met een plan naar de markt. Dit zijn de stappen:</p>
-
-  <ol class="stappen">
-    ${stappenNL.map(([t, d]) => `<li><strong>${t}</strong><span>${d}</span></li>`).join('\n    ')}
-  </ol>
-
-  <p>Het volledige plan, inclusief alle mediamogelijkheden, leest u terug in onze brochure:</p>
-  <p><a href="${BROCHURES.promotieplan_nl}" class="btn" target="_blank" rel="noopener">Bekijk de brochure (PDF)</a></p>
-
-  <p>Heeft u tussendoor vragen? ${makelaarNaam} is uw directe aanspreekpunt.</p>
+  ${klantBadge('OPDRACHT TOT DIENSTVERLENING GETEKEND')}
+  ${klantTitel('Welkom — dit is uw woningpromotieplan')}
+  ${pandAdres ? klantPand('Woning', pandAdres) : ''}
+  ${klantParagraaf(aanhef)}
+  ${klantParagraaf(`Hartelijk dank voor uw vertrouwen in Makelaars van Amsterdam. Uw verkoopopdracht is getekend en ${makelaarNaam} brengt uw woning nu met een plan naar de markt. Dit zijn de stappen:`)}
+  ${klantStappenlijst(stappenNL)}
+  ${klantParagraaf('Het volledige plan, inclusief alle mediamogelijkheden, leest u terug in onze brochure:')}
+  ${klantKnop(BROCHURES.promotieplan_nl, 'Bekijk de brochure (PDF)')}
+  ${klantParagraaf(`Heeft u tussendoor vragen? ${makelaarNaam} is uw directe aanspreekpunt.`)}
   `);
 
   const textBody = `OPDRACHT TOT DIENSTVERLENING GETEKEND — Uw woningpromotieplan
 
-${pandBlokTekst}${aanhef}
+${pandAdres ? `Woning: ${pandAdres}\n\n` : ''}${aanhef}
 
 Hartelijk dank voor uw vertrouwen. Uw verkoopopdracht is getekend en ${makelaarNaam} brengt uw woning met een plan naar de markt:
 
@@ -477,11 +469,11 @@ const TEMPLATES_PER_EVENT = {
     bouw: templateVerkoop
   },
   'otd_getekend_aankoop': {
-    naam: 'otd_klant_aankoop_v1',
+    naam: 'otd_klant_aankoop_v2',
     bouw: templateOTDAankoop
   },
   'otd_getekend_verkoop': {
-    naam: 'otd_klant_verkoop_v1',
+    naam: 'otd_klant_verkoop_v2',
     bouw: templateOTDVerkoop
   }
   // Toekomstige event-types hier toevoegen.
